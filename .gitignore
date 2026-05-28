@@ -1,0 +1,25 @@
+# Data
+data/raw/
+data/processed/
+*.xlsx
+*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Reports output
+reports/figures/*.png
+reports/figures/*.pdf
+
+# OS
+.DS_Store
+Thumbs.db

@@ -46,24 +46,11 @@ Download the dataset (see [`data/README.md`](data/README.md)), then run notebook
 
 ## Approach Overview
 
-```
-Transaction data
-      │
-      ▼
-  RFM features  ───────────────────────────────────────┐
-      │                                                │
-      ▼                                                │
-  BG/NBD model                                         │
-      │                                                │
-      ├── p_alive score ──► Pseudo churn label         │
-      │                              │                 │
-      └── CLV estimate               ▼                 ▼
-                                ML Classifier     ◄────┘
-                            (XGBoost / LightGBM)
-                                     │
-                                     ▼
-                        Churn risk score per customer
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/flowchart_dark.png">
+  <img alt="Approach Overview" src="images/flowchart_light.png">
+</picture>
+
 ## Tech Stack
 
 | Layer | Library |

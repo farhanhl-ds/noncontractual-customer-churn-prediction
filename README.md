@@ -4,14 +4,20 @@
 
 ## Background
 
-In **contractual** settings (e.g. subscriptions), churn is directly observable whenever a customer explicitly cancels. In **non-contractual** settings (e.g. e-commerce marketplaces), no such signal exists. A customer simply stops purchasing, and it is never immediately clear whether they have churned or are merely in a long inter-purchase gap.
+Customer churn in a marketplace or e-commerce setting is fundamentally different from churn in a subscription business. When a subscriber cancels, you know immediately. When a marketplace customer stops buying, there is no signal — they simply go quiet, and it is never clear whether they have churned or are just between purchases.
 
-This project applies the **Buy Till You Die (BTYD)** framework, which models customers as transitioning between "alive" and "dead" states over time. The specific model used is **BG/NBD** (Beta-Geometric/Negative Binomial Distribution), selected for its analytical tractability and strong empirical performance in non-contractual transaction data. See [`docs/03_conceptual_theory.md`](docs/03_conceptual_theory.md) for a full theoretical and conceptual background.
+This makes standard churn models unusable out of the box: they require a labeled dataset of churned vs. non-churned customers, but in a non-contractual setting that label does not exist. Any attempt to define it with a fixed inactivity threshold (e.g. "no purchase in 90 days = churned") introduces arbitrary bias that the model then learns and perpetuates.
 
-To address churn ambiguity, this project applies two complementary approaches:
+This project addresses that problem directly. Rather than forcing a binary churn label, we model the underlying purchase behavior probabilistically — asking *"what is the probability this customer is still active?"* instead of *"has this customer churned?"*
+
+See [`docs/01_problem_framing.md`](docs/01_problem_framing.md) for a full discussion of the problem, why classical ML approaches fall short, and the business impact of getting this right.
+
+This project applies the **Buy Till You Die (BTYD)** framework via the **BG/NBD** model, and extends it with a hybrid ML layer. Two complementary approaches are used:
 
 1. **Pure probabilistic baseline** — BG/NBD + Gamma-Gamma models estimate the probability a customer is still "alive" (`p_alive`) and their expected Customer Lifetime Value (CLV)
 2. **Hybrid extension** — BG/NBD-derived `p_alive` scores serve as pseudo-labels for a downstream ML classifier that incorporates richer behavioral features
+
+See [`docs/03_conceptual_theory.md`](docs/03_conceptual_theory.md) for the theory behind the models.
 
 ## Dataset
 

@@ -3,12 +3,9 @@
 > **Disclaimer:** This document is an intentionally simplified explanation of the BG/NBD and Gamma-Gamma models,
 > written to build intuition for readers without a marketing or statistics background.
 > It omits mathematical formalism, likelihood derivations, and technical assumptions covered in the original papers.
-> For the full theoretical treatment, refer directly to Fader et al. (2005) and Fader & Hardie (2013)
-> linked in the References section.
-
-This document explains the ideas behind the models used in this project — BG/NBD and Gamma-Gamma.
-No marketing background required. The goal is to give you enough intuition to understand
-*why* these models work and *what* their outputs actually mean before looking at any code.
+> The goal is to give you enough intuition to understand *why* these models work and *what* their outputs mean
+> before looking at any code. For the full theoretical treatment, refer directly to Fader et al. (2005)
+> and Fader & Hardie (2013) linked in the References section.
 
 ---
 

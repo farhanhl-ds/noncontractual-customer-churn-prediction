@@ -4,9 +4,9 @@
 
 ## Background
 
-In **contractual** settings (e.g. subscriptions), churn is directly observable whenever a customer explicitly cancels.
-In **non-contractual** settings (e.g. e-commerce marketplaces), no such signal exists. A customer simply stops
-purchasing, and it is never immediately clear whether they have churned or are merely in a long inter-purchase gap.
+In **contractual** settings (e.g. subscriptions), churn is directly observable whenever a customer explicitly cancels. In **non-contractual** settings (e.g. e-commerce marketplaces), no such signal exists. A customer simply stops purchasing, and it is never immediately clear whether they have churned or are merely in a long inter-purchase gap.
+
+This project is based on the Buy Till You Die (BTYD) modeling framework, a family of probabilistic models that assumes customers transition between “alive” and “dead” states over time. While customers are in the alive state, they make transactions at a certain rate, before eventually churning at an unobserved point in time. The BG/NBD model is the specific BTYD approach applied in this study, selected for its analytical tractability and strong empirical performance in modeling non-contractual transaction data.
 
 This project tackles that ambiguity using two complementary approaches:
 
@@ -53,13 +53,13 @@ Download the dataset (see [`data/README.md`](data/README.md)), then run notebook
 
 ## Tech Stack
 
-| Layer | Library |
-|-------|---------|
-| Probabilistic modeling | `lifetimes`, `pymc-marketing` |
-| ML modeling | `scikit-learn`, `xgboost`, `lightgbm` |
-| Interpretability | `shap` |
-| Data processing | `pandas`, `numpy` |
-| Visualization | `matplotlib`, `seaborn` |
+| Layer                  | Library                               |
+| ---------------------- | ------------------------------------- |
+| Probabilistic modeling | `lifetimes`, `pymc-marketing`         |
+| ML modeling            | `scikit-learn`, `xgboost`, `lightgbm` |
+| Interpretability       | `shap`                                |
+| Data processing        | `pandas`, `numpy`                     |
+| Visualization          | `matplotlib`, `seaborn`               |
 
 ## Acknowledged Limitations
 
@@ -69,7 +69,7 @@ Download the dataset (see [`data/README.md`](data/README.md)), then run notebook
 
 ## Key Results
 
-*To be updated after modeling phase — see [`docs/04_results.md`](docs/04_results.md).*
+_To be updated after modeling phase — see [`docs/04_results.md`](docs/04_results.md)._
 
 ## References
 

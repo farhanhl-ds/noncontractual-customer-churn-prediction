@@ -78,7 +78,7 @@ rather than assuming everyone is equally likely to leave.
 ### 3.3 The Clever Part: Both Happen at the Same Time
 
 The real insight of BG/NBD is that it handles both processes **simultaneously from just
-three numbers per customer:**
+three metrics per customer:**
 
 | Input | What it means |
 |-------|--------------|
@@ -86,7 +86,7 @@ three numbers per customer:**
 | `recency` | How long ago their last purchase was (relative to their first) |
 | `T` | How long they've been a customer overall |
 
-From just these three numbers, the model estimates the probability that a customer
+From just these three metrics, the model estimates the probability that a customer
 is still alive today — called **`p_alive`**.
 
 ### 3.4 The Silence Tells a Story
@@ -135,7 +135,7 @@ decisions like how much to spend on a win-back campaign.
 
 ## 5. What the Model Parameters Actually Mean
 
-When BG/NBD is fitted, it returns four numbers. Here's what they mean in plain English:
+When BG/NBD is fitted, it returns four variables. Here's what they mean in plain English:
 
 | Parameter | Plain English |
 |-----------|--------------|

@@ -6,32 +6,39 @@
 
 In **contractual** settings (e.g. subscriptions), churn is directly observable whenever a customer explicitly cancels. In **non-contractual** settings (e.g. e-commerce marketplaces), no such signal exists. A customer simply stops purchasing, and it is never immediately clear whether they have churned or are merely in a long inter-purchase gap.
 
-This project uses the Buy Till You Die (BTYD) framework, which models customers as transitioning between “alive” and “dead” states over time. While customers are in the alive state, they make transactions at a certain rate, before eventually churning at an unobserved point in time. The BG/NBD model is the specific BTYD approach applied in this study, selected for its analytical tractability and strong empirical performance in modeling non-contractual transaction data.
+This project applies the **Buy Till You Die (BTYD)** framework, which models customers as transitioning between "alive" and "dead" states over time. The specific model used is **BG/NBD** (Beta-Geometric/Negative Binomial Distribution), selected for its analytical tractability and strong empirical performance in non-contractual transaction data. See [`docs/03_conceptual_theory.md`](docs/03_conceptual_theory.md) for a full theoretical and conceptual background.
 
 To address churn ambiguity, this project applies two complementary approaches:
 
-1. **Pure probabilistic baseline** — BG/NBD + Gamma-Gamma models estimate the probability a customer is still "alive" and their expected lifetime value
+1. **Pure probabilistic baseline** — BG/NBD + Gamma-Gamma models estimate the probability a customer is still "alive" (`p_alive`) and their expected Customer Lifetime Value (CLV)
 2. **Hybrid extension** — BG/NBD-derived `p_alive` scores serve as pseudo-labels for a downstream ML classifier that incorporates richer behavioral features
 
 ## Dataset
 
 [UCI Online Retail II](https://archive.ics.uci.edu/dataset/502/online+retail+ii) — ~1M transactions from a UK-based wholesale retailer (2009–2011).
+After cleaning: **805,549 rows**, **5,789 unique customers**, date range `2010-01-01 → 2011-12-09`.
 
-See [`data/README.md`](data/README.md) for download instructions.
+See [`data/README.md`](data/README.md) for download instructions and [`docs/02_dataset.md`](docs/02_dataset.md) for full data quality notes.
 
 ## Project Structure
 
 ```
-├── data/               # Raw and processed data (not committed)
-├── notebooks/          # Analysis notebooks (run in order)
+├── data/                    # Raw and processed data (not committed)
+├── notebooks/               # Analysis notebooks (run in order)
 │   ├── 01_eda.ipynb
 │   ├── 02_rfm_computation.ipynb
 │   ├── 03_bgnbd_model.ipynb
 │   ├── 04_hybrid_ml.ipynb
 │   └── 05_comparison_report.ipynb
-├── src/                # Reusable Python modules
-├── reports/            # Saved figures and methodology notes
-└── docs/               # Deep-dive documentation
+├── src/                     # Reusable Python modules
+│   ├── preprocessing.py     # Data cleaning pipeline
+│   ├── rfm.py               # RFM computation + calibration/holdout split
+│   ├── probabilistic.py     # BG/NBD + Gamma-Gamma wrappers
+│   ├── features.py          # Feature engineering for ML layer
+│   └── evaluation.py        # Metrics, plots, comparison utilities
+├── models/                  # Fitted model artifacts (.pkl)
+├── reports/figures/         # Saved plots
+└── docs/                    # Deep-dive documentation
 ```
 
 ## Quickstart
@@ -46,34 +53,62 @@ Download the dataset (see [`data/README.md`](data/README.md)), then run notebook
 
 ## Approach Overview
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="images/flowchart_dark.png">
-  <img alt="Approach Overview" src="images/flowchart_light.png">
-</picture>
+```
+Transaction data
+      │
+      ▼
+  Cleaning & RFM computation
+      │
+      ├── frequency, recency, T, monetary_value
+      │
+      ▼
+  BG/NBD model (probabilistic baseline)
+      │
+      ├── p_alive  ────────────────► Pseudo churn label
+      │                                     │
+      ├── predicted_purchases               │
+      │                                     ▼
+      └── CLV estimate          ML Classifier (XGBoost / LightGBM)
+            (Gamma-Gamma)            + behavioral features
+                                          │
+                                          ▼
+                              Churn risk score per customer
+```
+
+## Documentation
+
+| File | Description |
+|------|-------------|
+| [`docs/01_problem_framing.md`](docs/01_problem_framing.md) | Why non-contractual churn is hard and how we approach it |
+| [`docs/02_dataset.md`](docs/02_dataset.md) | Dataset facts, data quality summary, RFM statistics |
+| [`docs/03_conceptual_theory.md`](docs/03_conceptual_theory.md) | Theory behind BG/NBD, Gamma-Gamma, and the BTYD framework |
+| [`docs/04_methodology.md`](docs/04_methodology.md) | How the models are applied end-to-end in this project |
+| [`docs/05_results.md`](docs/05_results.md) | Key findings and model comparison *(to be updated)* |
 
 ## Tech Stack
 
-| Layer                  | Library                               |
-| ---------------------- | ------------------------------------- |
-| Probabilistic modeling | `lifetimes`, `pymc-marketing`         |
-| ML modeling            | `scikit-learn`, `xgboost`, `lightgbm` |
-| Interpretability       | `shap`                                |
-| Data processing        | `pandas`, `numpy`                     |
-| Visualization          | `matplotlib`, `seaborn`               |
+| Layer | Library |
+|-------|---------|
+| Probabilistic modeling | `lifetimes`, `pymc-marketing` |
+| ML modeling | `scikit-learn`, `xgboost`, `lightgbm` |
+| Interpretability | `shap` |
+| Data processing | `pandas`, `numpy` |
+| Visualization | `matplotlib`, `seaborn` |
 
 ## Acknowledged Limitations
 
 - The UCI Online Retail II dataset represents a **B2B wholesale** context with naturally higher and more regular repeat purchase rates than typical B2C marketplaces. Model generalizability to B2C settings should be validated on domain-specific data.
-- BG/NBD assumes **stationary purchase behavior**. It does not capture trend or seasonality in transaction rates.
-- Pseudo-labels generated by BG/NBD introduce **label noise** into the ML layer. Model performance is therefore sensitive to the quality of the probabilistic fit.
+- BG/NBD assumes **stationary purchase behavior** — it does not capture trend or seasonality in transaction rates.
+- Pseudo-labels generated by BG/NBD introduce **label noise** into the ML layer. Model performance is therefore sensitive to the quality of the probabilistic fit. See [`docs/03_conceptual_theory.md`](docs/03_conceptual_theory.md) for a detailed discussion of error propagation risk.
 
 ## Key Results
 
-_To be updated after modeling phase — see [`docs/04_results.md`](docs/04_results.md)._
+*To be updated after modeling phase — see [`docs/05_results.md`](docs/05_results.md).*
 
 ## References
 
 - Fader, P.S., Hardie, B.G.S., & Lee, K.L. (2005). ["Counting Your Customers" the Easy Way: An Alternative to the Pareto/NBD Model](http://www.brucehardie.com/papers/018/fader_et_al_mksc_05.pdf)
 - Fader, P.S. & Hardie, B.G.S. (2013). [The Gamma-Gamma Model of Monetary Value](http://www.brucehardie.com/notes/025/gamma_gamma.pdf)
+- Hardie, B.G.S. (2014). [Notes on the BG/NBD Model](http://www.brucehardie.com/notes/004/bgnbd_spreadsheet_note.pdf)
 - [`lifetimes`](https://github.com/CamDavidsonPilon/lifetimes) — Python library for CLV and non-contractual churn modeling
 - [`pymc-marketing`](https://github.com/pymc-labs/pymc-marketing) — Bayesian marketing mix modeling and CLV estimation built on PyMC

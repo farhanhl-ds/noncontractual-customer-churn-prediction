@@ -53,27 +53,10 @@ Download the dataset (see [`data/README.md`](data/README.md)), then run notebook
 
 ## Approach Overview
 
-```
-Transaction data
-      │
-      ▼
-  Cleaning & RFM computation
-      │
-      ├── frequency, recency, T, monetary_value
-      │
-      ▼
-  BG/NBD model (probabilistic baseline)
-      │
-      ├── p_alive  ────────────────► Pseudo churn label
-      │                                     │
-      ├── predicted_purchases               │
-      │                                     ▼
-      └── CLV estimate          ML Classifier (XGBoost / LightGBM)
-            (Gamma-Gamma)            + behavioral features
-                                          │
-                                          ▼
-                              Churn risk score per customer
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/flowchart_dark.png">
+  <img alt="Approach Overview" src="images/flowchart_light.png">
+</picture>
 
 ## Documentation
 

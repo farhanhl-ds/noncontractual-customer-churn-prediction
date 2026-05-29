@@ -6,9 +6,9 @@
 
 In **contractual** settings (e.g. subscriptions), churn is directly observable whenever a customer explicitly cancels. In **non-contractual** settings (e.g. e-commerce marketplaces), no such signal exists. A customer simply stops purchasing, and it is never immediately clear whether they have churned or are merely in a long inter-purchase gap.
 
-This project is based on the Buy Till You Die (BTYD) modeling framework, a family of probabilistic models that assumes customers transition between “alive” and “dead” states over time. While customers are in the alive state, they make transactions at a certain rate, before eventually churning at an unobserved point in time. The BG/NBD model is the specific BTYD approach applied in this study, selected for its analytical tractability and strong empirical performance in modeling non-contractual transaction data.
+This project uses the Buy Till You Die (BTYD) framework, which models customers as transitioning between “alive” and “dead” states over time. While customers are in the alive state, they make transactions at a certain rate, before eventually churning at an unobserved point in time. The BG/NBD model is the specific BTYD approach applied in this study, selected for its analytical tractability and strong empirical performance in modeling non-contractual transaction data.
 
-This project tackles that ambiguity using two complementary approaches:
+To address churn ambiguity, this project applies two complementary approaches:
 
 1. **Pure probabilistic baseline** — BG/NBD + Gamma-Gamma models estimate the probability a customer is still "alive" and their expected lifetime value
 2. **Hybrid extension** — BG/NBD-derived `p_alive` scores serve as pseudo-labels for a downstream ML classifier that incorporates richer behavioral features
